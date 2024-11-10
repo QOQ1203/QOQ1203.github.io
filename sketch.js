@@ -1,7 +1,9 @@
 let bgImage;  // 背景图片变量
 let particles = [];  // 粒子数组
 let buttonImg;  // 自定义按钮图片
-let buttonX = 700, buttonY = 300, buttonScale = 0.25;  // 定义按钮位置和缩放比例
+let buttonScale = 0.25;  // 定义按钮位置和缩放比例
+let buttonXRatio = 0.4; // 相对于宽度的比例
+let buttonYRatio = 0.37; // 相对于高度的比例
 
 const targetDamping = 0.72;
 const targetChaseForce = 1.5;
@@ -33,7 +35,9 @@ function setup() {
   pixelDensity(2);
   colorMode(HSB, 360, 100, 100, 100);
   curveTightness(-0.2);
-
+ // 设置初始按钮位置为相对屏幕位置
+ buttonX = windowWidth * buttonXRatio;
+ buttonY = windowHeight * buttonYRatio;
   // 初始化粒子数组
   particles = new Array(maxParticles).fill().map(() => [
     random(width), // x
@@ -228,4 +232,7 @@ function drawCustomCursor() {
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+  // 更新按钮位置为相对位置
+  buttonX = windowWidth * buttonXRatio;
+  buttonY = windowHeight * buttonYRatio;
 }
