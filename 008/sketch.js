@@ -1,7 +1,14 @@
 let bgImage;  // 背景图片变量
 let particles = [];  // 粒子数组
 let buttonImg;  // 自定义按钮图片
-let buttonX = 1100, buttonY = 615, buttonScale = 0.25;  // 定义按钮位置和缩放比例
+let buttonScale = 0.25;  // 定义按钮位置和缩放比例
+let buttonXRatio = 0.6; // 相对于窗口宽度的比例
+let buttonYRatio = 0.75; // 相对于窗口高度的比例
+let bgXRatio = 0.5; // 背景图片相对于宽度的水平中心比例
+let bgYRatio = 0.5; // 背景图片相对于高度的垂直中心比例
+let bgScaleRatio = 0.13; // 背景图片缩放比例，例如 0.8 表示缩放到 80% 大小
+let buttonOffsetX, buttonOffsetY; // 按钮相对于背景图片的偏移量
+let particleOffsets = []; // 存储每个粒子相对于背景图的偏移量
 
 const targetDamping = 0.72;
 const targetChaseForce = 1.5;
@@ -34,14 +41,35 @@ function setup() {
   pixelDensity(2);
   colorMode(HSB, 360, 100, 100, 100);
   curveTightness(-0.2);
+ // 初始化按钮的位置
+ buttonX = windowWidth * buttonXRatio;
+ buttonY = windowHeight * buttonYRatio;
+  // 计算缩放后的背景图片宽高
+  let bgWidth = bgImage.width * bgScaleRatio;
+  let bgHeight = bgImage.height * bgScaleRatio;
+ 
+  // 背景图片的初始位置（居中）
+  let bgX = (windowWidth - bgWidth) * bgXRatio;
+  let bgY = (windowHeight - bgHeight) * bgYRatio;
+   // 计算按钮相对于背景图片的偏移量
+ buttonOffsetX = buttonX - bgX;
+ buttonOffsetY = buttonY - bgY;
 
-  // 初始化粒子数组
-  particles = new Array(maxParticles).fill().map(() => [
-    random(1000, 1120), // x
-    random(240, 270), // y
-    random(-2, 2), // velocityX
-    random(-2, 2), // velocityY
-  ]);
+ // 初始化粒子并计算相对于背景图片的偏移量
+ particles = new Array(maxParticles).fill().map(() => {
+  let px = random(width);
+  let py = random(height);
+  let velocityX = random(8, 9);
+  let velocityY = random(-2, 2);
+
+  // 计算相对于背景图片中心的偏移量
+  let offsetX = px - bgX;
+  let offsetY = py - bgY;
+  particleOffsets.push([offsetX, offsetY]);
+
+  return [px, py, velocityX, velocityY];
+});
+
 // 播放背景音乐并设置音量
 if (bgMusic) {
   bgMusic.loop();  // 循环播放背景音乐
@@ -70,10 +98,40 @@ function draw() {
     let newHeight = width / imgAspect;
     image(bgImage, 0, (height - newHeight) / 2, width, newHeight);
   }
+// 计算缩放后的背景图片宽高
+let bgWidth = bgImage.width * bgScaleRatio;
+let bgHeight = bgImage.height * bgScaleRatio;
 
+// 背景图片的位置（居中）
+let bgX = width * bgXRatio - bgWidth / 2;
+let bgY = height * bgYRatio - bgHeight / 2;
+
+// 绘制背景图片
+image(bgImage, bgX, bgY, bgWidth, bgHeight);
+
+
+
+// 使用偏移量计算按钮的位置
+buttonX = bgX + buttonOffsetX;
+buttonY = bgY + buttonOffsetY;
   // 先绘制按钮，让它位于粒子下方
   drawButton();  // 按钮先绘制
+// 绘制并更新粒子
+particles = particles.map(([x, y, velocityX, velocityY], i) => {
+  // 更新粒子位置
+  let nextX = x + velocityX;
+  let nextY = y + velocityY;
 
+  // 保持粒子在画布内
+  if (nextX < 0 || nextX > width) velocityX *= -1;
+  if (nextY < 0 || nextY > height) velocityY *= -1;
+
+  // 绘制粒子
+  stroke(0, 100, 100);
+  point(nextX, nextY);
+
+  return [nextX, nextY, velocityX, velocityY];
+});
   // 鼠标按下时，线条逐渐消失
   if (mouseIsPressed) {
     damping = lerp(damping, 1.0, fadeSpeed);
@@ -229,4 +287,23 @@ imageMode(CORNER);  // 恢复为默认模式
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+
+  // 重新计算背景图片的位置
+  let bgWidth = bgImage.width * bgScaleRatio;
+  let bgHeight = bgImage.height * bgScaleRatio;
+  let bgX = (windowWidth - bgWidth) * bgXRatio;
+  let bgY = (windowHeight - bgHeight) * bgYRatio;
+
+  // 根据偏移量重新设置按钮的位置
+  buttonX = bgX + buttonOffsetX;
+  buttonY = bgY + buttonOffsetY;
+
+  // 更新粒子位置使其相对于背景图片位置不变
+  particles = particles.map(([_, __, velocityX, velocityY], i) => {
+    let [offsetX, offsetY] = particleOffsets[i];
+    let x = bgX + offsetX;
+    let y = bgY + offsetY;
+
+    return [x, y, velocityX, velocityY];
+  });
 }
