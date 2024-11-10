@@ -4,6 +4,10 @@ let buttonImg;  // 自定义按钮图片
 let buttonScale = 0.25;  // 定义按钮位置和缩放比例
 let buttonXRatio = 0.4; // 相对于宽度的比例
 let buttonYRatio = 0.37; // 相对于高度的比例
+let bgXRatio = 0.5; // 背景图片相对于宽度的水平中心比例
+let bgYRatio = 0.5; // 背景图片相对于高度的垂直中心比例
+let bgScaleRatio = 0.13; // 背景图片缩放比例，例如 0.8 表示缩放到 80% 大小
+let buttonOffsetX, buttonOffsetY; // 按钮相对于背景图片的偏移量
 
 const targetDamping = 0.72;
 const targetChaseForce = 1.5;
@@ -35,9 +39,22 @@ function setup() {
   pixelDensity(2);
   colorMode(HSB, 360, 100, 100, 100);
   curveTightness(-0.2);
- // 设置初始按钮位置为相对屏幕位置
+ // 计算缩放后的背景图片宽高
+ let bgWidth = bgImage.width * bgScaleRatio;
+ let bgHeight = bgImage.height * bgScaleRatio;
+
+ // 背景图片的初始位置（居中）
+ let bgX = (windowWidth - bgWidth) * bgXRatio;
+ let bgY = (windowHeight - bgHeight) * bgYRatio;
+
+ // 初始化按钮的位置
  buttonX = windowWidth * buttonXRatio;
  buttonY = windowHeight * buttonYRatio;
+
+ // 计算按钮相对于背景图片的偏移量
+ buttonOffsetX = buttonX - bgX;
+ buttonOffsetY = buttonY - bgY;
+ 
   // 初始化粒子数组
   particles = new Array(maxParticles).fill().map(() => [
     random(width), // x
@@ -61,21 +78,24 @@ function draw() {
 
   // 清除整个画布
   clear();
+// 计算缩放后的背景图片宽高
+let bgWidth = bgImage.width * bgScaleRatio;
+let bgHeight = bgImage.height * bgScaleRatio;
 
-  // 显示背景图片，并保持其比例缩放，适应画布大小
-  let imgAspect = bgImage.width / bgImage.height;
-  let canvasAspect = width / height;
+// 背景图片的位置（居中）
+let bgX = width * bgXRatio - bgWidth / 2;
+let bgY = height * bgYRatio - bgHeight / 2;
 
-  if (canvasAspect > imgAspect) {
-    // 如果画布的宽高比大于图片宽高比，按高度缩放，宽度适应
-    let newWidth = height * imgAspect;
-    image(bgImage, (width - newWidth) / 2, 0, newWidth, height);
-  } else {
-    // 如果画布的宽高比小于或等于图片宽高比，按宽度缩放，高度适应
-    let newHeight = width / imgAspect;
-    image(bgImage, 0, (height - newHeight) / 2, width, newHeight);
-  }
+// 绘制背景图片
+image(bgImage, bgX, bgY, bgWidth, bgHeight);
 
+// 使用偏移量计算按钮的位置
+buttonX = bgX + buttonOffsetX;
+buttonY = bgY + buttonOffsetY;
+
+
+// 绘制缩放后的背景图片
+image(bgImage, bgX, bgY, bgWidth, bgHeight);
   // 先绘制按钮，让它位于粒子下方
   drawButton();  // 按钮先绘制
 
@@ -232,7 +252,15 @@ function drawCustomCursor() {
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
-  // 更新按钮位置为相对位置
-  buttonX = windowWidth * buttonXRatio;
-  buttonY = windowHeight * buttonYRatio;
+
+  // 重新计算背景图片的位置
+  let bgWidth = bgImage.width * bgScaleRatio;
+  let bgHeight = bgImage.height * bgScaleRatio;
+  let bgX = (windowWidth - bgWidth) * bgXRatio;
+  let bgY = (windowHeight - bgHeight) * bgYRatio;
+
+  // 根据偏移量重新设置按钮的位置
+  buttonX = bgX + buttonOffsetX;
+  buttonY = bgY + buttonOffsetY;
 }
+
