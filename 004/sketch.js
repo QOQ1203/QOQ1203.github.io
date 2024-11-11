@@ -14,14 +14,7 @@ let buttonBVisible = false;  // 控制按钮 B 的显示
 let buttonImg2Visible = false;  // 控制 buttonImg2 的显示
 let png1Visible = false;  // 控制 png1 的显示
 let png2Visible = false;  // 控制 png2 的显示
-let png1Position = { x: 550, y: 70, scale: 0.28 };  // 定义 png1 的位置和缩放比例
-let png2Position = { x: 550, y: 450, scale: 0.28 };  // 定义 png2 的位置和缩放比例
-let png3Position = { x: 750, y: 80, scale: 0.28 };  // 自定义 png3 的位置和缩放比例
-let png4Position = { x: 750, y: 420, scale: 0.28 };  // png4的位置
-let png5Position = { x: 550, y: 600, scale: 0.28 };  // png5的位置
-let png6Position = { x: 750, y: 600, scale: 0.28 };  // png6的位置
-let png7Position = { x: 550, y: 210, scale: 0.28 };  // png7的位置
-let png8Position = { x: 700, y: 220, scale: 0.28 };  // png8的位置
+
 
 let png3;  // 添加 png3 和位置变量
 let png3Visible = false;  // 控制 png3 的显示
@@ -64,7 +57,8 @@ let cursorScale = 0.3;  // 定义鼠标图片的缩放比例
 let bgMusic;  // 背景音乐变量
 let hoverSound;  // 悬停声音变量
 let animationMusic;  // 定义动画期间播放的音乐
-
+let backgroundImagePosition = { x: 0.48, y: 0.5, scale: 0.125 };  // 相对于窗口的比例
+let bgX, bgY, bgWidth, bgHeight
 class CustomAnimation {
   constructor(x, y, w, h, img) {
     this.x = x;
@@ -141,26 +135,58 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   noCursor();  // 隐藏默认鼠标指针
   noStroke();  // 全局禁用描边
-
+ // 初始化相对位置
+ setRelativePositions();
  // 播放背景音乐并设置音量
 if (bgMusic) {
   bgMusic.loop();  // 循环播放背景音乐
   bgMusic.setVolume(0.5);  // 设置音量（可调整）
 }
 
-  // 手动设置按钮 A 和 B 的坐标和缩放比例
-  buttonAPosition = { x: 630, y: 330, scale: 0.2 };  // 自定义按钮A的位置和缩放比例
-  buttonBPosition = { x: 1095, y: 70, scale: 0.15 };  // 自定义按钮B的位置和缩放比例（默认不显示）
-  button2Position = { x: 1060, y: 701, scale: 0.15 };  // 自定义 buttonImg2 的位置和缩放比例
+ // 根据背景图片的位置，计算其他元素的位置
+ buttonAPosition = { x: bgX + 0.35 * bgWidth, y: bgY + 0.4 * bgHeight, scale: 0.2 };
+ buttonBPosition = { x: bgX + 0.82 * bgWidth, y: bgY + 0.05 * bgHeight, scale: 0.15 };
+ button2Position = { x: bgX + 0.79 * bgWidth, y: bgY + 0.82 * bgHeight, scale: 0.15 };
 
-  // 设置矩形范围的自定义位置和大小
-  xmin = 550;
-  xmax = 950;
-  ymin = 50;
-  ymax = 730;
+
 
 }
+function setRelativePositions() {
+  // 计算背景图片的实际位置和尺寸
+  const scaleRatio = backgroundImagePosition.scale;
+  bgWidth = img1.width * scaleRatio;
+  bgHeight = img1.height * scaleRatio;
+  bgX = (windowWidth * backgroundImagePosition.x) - (bgWidth / 2);
+  bgY = (windowHeight * backgroundImagePosition.y) - (bgHeight / 2);
 
+  // 根据背景图片的位置，计算其他元素的位置
+  buttonAPosition = { x: bgX - 0.5 * bgWidth, y: bgY + 0.2 * bgHeight, scale: 0.2 };
+  buttonBPosition = { x: bgX + 0.5 * bgWidth, y: bgY + 0.05 * bgHeight, scale: 0.15 };
+  button2Position = { x: bgX + 0.1 * bgWidth, y: bgY + 0.7 * bgHeight, scale: 0.15 };
+
+  // 其他图片相对于背景图片的相对位置
+  png1Position = { x: bgX + 0.25 * bgWidth, y: bgY + 0.1 * bgHeight, scale: 0.28 };
+  png2Position = { x: bgX + 0.25 * bgWidth, y: bgY + 0.5 * bgHeight, scale: 0.28 };
+  png3Position = { x: bgX + 0.4 * bgWidth, y: bgY + 0.2 * bgHeight, scale: 0.28 };
+  png4Position = { x: bgX + 0.5 * bgWidth, y: bgY + 0.5 * bgHeight, scale: 0.28 };
+  png5Position = { x: bgX + 0.3 * bgWidth, y: bgY + 0.7 * bgHeight, scale: 0.28 };
+  png6Position = { x: bgX + 0.5 * bgWidth, y: bgY + 0.05 * bgHeight, scale: 0.28 };
+  png7Position = { x: bgX + 0.55 * bgWidth, y: bgY + 0.3 * bgHeight, scale: 0.28 };
+  png8Position = { x: bgX + 0.5 * bgWidth, y: bgY + 0.75 * bgHeight, scale: 0.28 };
+  png9Position = { x: bgX + 0.38 * bgWidth, y: bgY + 0.2 * bgHeight, scale: 0.2 };
+  png10Position = { x: bgX + 0.77 * bgWidth, y: bgY + 0.18 * bgHeight, scale: 0.22 };
+
+  // 设置随机生成的矩形区域
+  xmin = bgX + 0.25 * bgWidth;
+  xmax = bgX + 0.67 * bgWidth;
+  ymin = bgY + 0.1 * bgHeight;
+  ymax = bgY + 0.8 * bgHeight;
+
+  rectXMin = bgX + 0.2 * bgWidth;
+  rectXMax = bgX + 0.58 * bgWidth;
+  rectYMin = bgY + 0.3 * bgHeight;
+  rectYMax = bgY + 0.4 * bgHeight;
+}
 function draw() {
   // 清除画布，确保不会有残留图像
   background(255);
@@ -170,8 +196,8 @@ function draw() {
 // 生成动画（控制速度和数量）
 if (animationRunning && frameCount % animationFrameDelay === 0) {
   for (let i = 0; i < animationsPerBatch; i++) {
-    let x = random(500, 850);
-    let y = random(200, 400);
+    const x = random(rectXMin, rectXMax);
+    const y = random(rectYMin, rectYMax);
     let w = random(150, 160);
     let h = random(190, 200);
     let img = random(animationImgs);  // 随机选择一张自定义图片
@@ -259,15 +285,17 @@ if (animationRunning) {
     }
   }
 
+ 
+  // 显示所有图片，使用相对位置
   if (png9Visible) {
-    image(png9, 670, 200, png9.width * 0.15, png9.height * 0.15);  // 调整为你的 png9 的位置和缩放比例
+    image(png9, png9Position.x, png9Position.y, png9.width * png9Position.scale, png9.height * png9Position.scale);
   }
   
   if (button2Visible) {
     drawButton(buttonImg2, button2Position);  // 绘制 button2
   }
   if (png10Visible) {
-    image(png10, 1040, 170, png10.width * 0.22, png10.height * 0.22);  // 调整为你需要的 png10 位置和缩放比例
+    image(png10, png10Position.x, png10Position.y, png10.width * png10Position.scale, png10.height * png10Position.scale);
   }
   
     
@@ -441,8 +469,29 @@ if (button2Visible) {
 }
   }
 }
+function drawBackgroundImage(img) {
+  // 设置背景图片的固定宽度和高度（可以根据需求调整具体数值）
+  const fixedWidth = 1300;  // 背景图片的固定宽度
+  const fixedHeight = 800;  // 背景图片的固定高度
+
+  // 设置背景图片的固定位置，使用绝对坐标（可以根据需求调整具体数值）
+  const fixedX = 150;  // 背景图片的固定X坐标
+  const fixedY = -10;   // 背景图片的固定Y坐标
+
+  // 绘制背景图片，不随窗口缩放和位置变化
+  image(img, fixedX, fixedY, fixedWidth, fixedHeight);
+}
 
 
+
+// 在窗口大小更改时重新计算相对位置
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+
+  // 重新计算背景图片的位置
+  let bgWidth = bgImage.width * bgScaleRatio;
+  let bgHeight = bgImage.height * bgScaleRatio;
+  let bgX = (windowWidth - bgWidth) * bgXRatio;
+  let bgY = (windowHeight - bgHeight) * bgYRatio;
+  setRelativePositions();  // 调用以重新设置相对位置
 }

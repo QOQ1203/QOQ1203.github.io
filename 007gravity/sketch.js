@@ -118,7 +118,7 @@ if (bgMusic) {
   }
 
  // 创建按钮并隐藏
- button = createButton('Go to New Page');
+ button = createButton('What is Desire');
  button.position(1300, windowHeight * 0.8);  // 自定义按钮位置
  button.size(200, 50);  // 自定义按钮大小
  button.style('background-color', '#ff0000'); // 背景颜色红色

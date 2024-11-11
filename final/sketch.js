@@ -1,6 +1,7 @@
 let bgImage;  // 背景图片变量
 let buttonImg;  // 自定义按钮图片
-let buttonX = 110, buttonY = 660, buttonScale = 0.25;  // 定义按钮位置和缩放比例
+let  buttonScale = 0.25;  // 定义按钮位置和缩放比例
+let buttonX, buttonY;
 
 let eyePositions = [];  // 用于存储所有眼睛的位置
 let eyeWidth = 200;  // 眼睛的宽度
@@ -38,15 +39,18 @@ function setup() {
   frameRate(60);
   pixelDensity(2);
   colorMode(RGB);
+   // 初始化按钮相对位置
+   buttonX = windowWidth * 0.1; // 屏幕宽度的50%
+   buttonY = windowHeight * 0.77; // 屏幕高度的90%
 // 播放背景音乐并设置音量
 if (bgMusic) {
   bgMusic.loop();  // 循环播放背景音乐
   bgMusic.setVolume(0.5);  // 设置音量（可调整）
 }
-  // 初始化一个眼睛位置
-  let eyeX = width / 2+3;
-  let eyeY = height / 2+150;
-  eyePositions.push({ x: eyeX, y: eyeY });
+let eyeX = windowWidth * 0.502 ;  // 调整为相对于窗口宽度的50%位置
+let eyeY = windowHeight * 0.69 ;  // 调整为相对于窗口高度的某个位置
+eyePositions.push({ x: eyeX, y: eyeY });
+
 
   // 创建眼白遮罩和瞳孔遮罩
   let maskGraphic = createGraphics(eyeWidth, eyeHeight);
@@ -68,7 +72,14 @@ if (bgMusic) {
 
   noCursor();
 }
+function drawBackground() {
+  let bgFixedWidth = 1920;  // 背景图片的固定宽度
+  let bgFixedHeight = 1080;  // 背景图片的固定高度
+  let xOffset = (windowWidth - bgFixedWidth) / 2;
+  let yOffset = (windowHeight - bgFixedHeight) / 2;
 
+  image(bgImage, xOffset, yOffset, bgFixedWidth, bgFixedHeight);
+}
 function draw() {
   background(255);
 
@@ -197,6 +208,3 @@ function drawCustomCursor() {
 	imageMode(CORNER);  // 恢复为默认模式
   }
 
-function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
-}

@@ -2,7 +2,9 @@ let bgImage; // 背景图片变量
 let buttonImg; // 自定义按钮图片
 let frontImage1, backImage1; // 第一组图片
 let frontImage2, backImage2; // 第二组图片
-let buttonX = 520, buttonY = 710, buttonScale = 0.25; // 按钮位置和缩放比例
+let buttonScale = 0.25; // 按钮位置和缩放比例
+let buttonX, buttonY;
+
 let showNewImages = false; // 控制是否显示两组图片
 let isFront1 = true, isFront2 = true; // 两组图片是否显示正面
 
@@ -48,8 +50,12 @@ function setup() {
   pixelDensity(2);
   colorMode(RGB); // 设置 RGB 颜色模式
   noCursor(); // 隐藏默认光标
-  endButtonX = width - 170; // 设置 "End" 按钮的 X 位置
-  endButtonY = height - 120; // 设置 "End" 按钮的 Y 位置
+   // 初始化按钮相对位置
+   buttonX = windowWidth * 0.32; // 屏幕宽度的50%
+   buttonY = windowHeight * 0.86; // 屏幕高度的90%
+     // 初始化 "End" 按钮的位置
+  endButtonX = windowWidth * 0.9; // 屏幕宽度的中间偏左 40 像素
+  endButtonY = windowHeight * 0.9; // 屏幕高度的 90%
   // 播放背景音乐并设置音量
   if (bgMusic) {
     bgMusic.loop(); // 循环播放背景音乐
@@ -214,6 +220,4 @@ function drawOverlay() {
   textSize(32); // 设置文字大小
   text("I hope she's a free spirit now", width / 2, height / 2); // 在屏幕中心显示文字
 }
-function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
-}
+

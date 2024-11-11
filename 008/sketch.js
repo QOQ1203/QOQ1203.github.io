@@ -11,12 +11,12 @@ let buttonOffsetX, buttonOffsetY; // 按钮相对于背景图片的偏移量
 let particleOffsets = []; // 存储每个粒子相对于背景图的偏移量
 
 const targetDamping = 0.72;
-const targetChaseForce = 1.5;
+const targetChaseForce = 0.5;//1.5
 
 let damping = targetDamping;
 let chaseForce = targetChaseForce;
-const distanceToDrawLine = 70;
-const maxParticles = 1600;
+const distanceToDrawLine = 1000;
+const maxParticles = 600;
 
 let cursorImg;  // 默认鼠标样式图片
 let hoverCursorImg;  // 悬停时鼠标样式图片
@@ -59,8 +59,8 @@ function setup() {
  particles = new Array(maxParticles).fill().map(() => {
   let px = random(width);
   let py = random(height);
-  let velocityX = random(8, 9);
-  let velocityY = random(-2, 2);
+  let velocityX = random(1, 1.1);
+  let velocityY = random(1, 1.1);
 
   // 计算相对于背景图片中心的偏移量
   let offsetX = px - bgX;

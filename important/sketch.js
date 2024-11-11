@@ -51,6 +51,7 @@ let bgMusic;  // 背景音乐变量
 let newMusic;  // 声明新音乐变量
 let newClickSound;  // 声明新的点击声音变量
 
+
 function preload() {
   // 预加载一张背景图片
   img1 = loadImage('background1.jpg');  // 第一张背景图片路径
@@ -216,24 +217,18 @@ if (showDragIndicator) {
 
 
 
-// 保持背景图片按比例缩放
 function drawBackgroundImage(img) {
-  let imgAspect = img.width / img.height;
-  let canvasAspect = width / height;
+  // 设置背景图片的固定宽度和高度（可以根据需求调整具体数值）
+  const fixedWidth = 1300;  // 背景图片的固定宽度
+  const fixedHeight = 850;  // 背景图片的固定高度
 
-  let imgWidth, imgHeight;
+  // 设置背景图片的固定位置，使用绝对坐标（可以根据需求调整具体数值）
+  const fixedX = 150;  // 背景图片的固定X坐标
+  const fixedY = -10;   // 背景图片的固定Y坐标
 
-  if (canvasAspect > imgAspect) {
-    imgHeight = height;
-    imgWidth = imgAspect * imgHeight;
-  } else {
-    imgWidth = width;
-    imgHeight = imgWidth / imgAspect;
-  }
-
-  image(img, (width - imgWidth) / 2, (height - imgHeight) / 2, imgWidth, imgHeight);
+  // 绘制背景图片，不随窗口缩放和位置变化
+  image(img, fixedX, fixedY, fixedWidth, fixedHeight);
 }
-
 /**
  * 加载第一组图片
  */
@@ -614,7 +609,14 @@ function drawCustomCursor() {
 
 
 
-// 当窗口大小变化时，调整画布大小
+// 在窗口大小更改时重新计算相对位置
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+
+  // 重新计算背景图片的位置
+  let bgWidth = bgImage.width * bgScaleRatio;
+  let bgHeight = bgImage.height * bgScaleRatio;
+  let bgX = (windowWidth - bgWidth) * bgXRatio;
+  let bgY = (windowHeight - bgHeight) * bgYRatio;
+  setRelativePositions();  // 调用以重新设置相对位置
 }

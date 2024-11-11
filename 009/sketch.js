@@ -640,7 +640,8 @@ function drawParticles() {
 }
 
 function drawFlashlight() {
-    maskGraphics.clear();
+    
+  maskGraphics.clear();
     maskGraphics.background(0);
 
     // 使用当前光圈半径绘制光圈
@@ -906,10 +907,6 @@ function drawCustomCursor(x, y) {
       line(x - offset, y + offset, x + offset, y - offset);
     }
   }
-}
-
-function windowResized() {
-  resizeCanvas(windowWidth * 4, windowHeight);
 }
 
 function windowResized() {
