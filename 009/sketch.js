@@ -55,7 +55,7 @@ let showTextImage = false; // 控制是否显示 textpng 图片
 let textImgX, textImgY; // textpng 图片的初始位置
 let textImgWidth, textImgHeight; // textpng 图片的宽高
 // 
-let moveSpeed = 0.3; // 向上平移的速度
+let moveSpeed = 0.35; // 向上平移的速度
 let finalTextImgY; // 最终 Y 位置
 let rectVisible = false; // 用于控制矩形是否可见
 let showRectangle = false; // 新增一个变量来控制矩形和文字的显示
@@ -221,7 +221,7 @@ function preload() {
   bgMusic = loadSound('bg.mp3');  // 替换为你的背景音频文件路径
   button3Sound = loadSound('mixkit-home-standard-ding-dong-109.wav');
   png11Sound = loadSound('mixkit-distant-train-horn-1654.wav');
-  button4Sound = loadSound('435539277567643.mp3');
+  button4Sound = loadSound('11月11日.WAV');
   button7Sound = loadSound('pl1.mp3');
   audioCue = loadSound('heart.wav');
 }

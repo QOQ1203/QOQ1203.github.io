@@ -217,7 +217,7 @@ function drawOverlay() {
   // 添加文字
   fill(255); // 设置文字颜色为白色
   textAlign(CENTER, CENTER); // 文字居中对齐
-  textSize(32); // 设置文字大小
+  textSize(20); // 设置文字大小
   text("I hope she's a free spirit now", width / 2, height / 2); // 在屏幕中心显示文字
 }
 

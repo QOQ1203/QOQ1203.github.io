@@ -30,7 +30,7 @@ function preload() {
   eyeBackground = loadImage('ada.png');  // 自定义眼白图片
   cursorImg = loadImage('cursor1.png');  // 替换为你的默认鼠标图片路径
   hoverCursorImg = loadImage('cursor2.png');  // 替换为你的悬停鼠标图片路径
-  bgMusic = loadSound('mixkit-electricity-buzz-910.wav');  // 替换为你的背景音频文件路径
+  bgMusic = loadSound('11月11日(1).WAV');  // 替换为你的背景音频文件路径
   hoverSound = loadSound('mixkit-robotic-insect-buzz-332.wav');  // 替换为你的悬停音效文件路径
 }
 
