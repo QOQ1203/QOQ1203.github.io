@@ -214,13 +214,13 @@ function mousePressed() {
 }
 // 绘制遮罩的函数
 function drawOverlay() {
-  fill(0, 255); // 半透明黑色
+  fill(255,255); // 半透明黑色
   rect(0, 0, width, height); // 绘制全屏矩形
-
+  noStroke(); 
   // 添加文字
-  fill(255); // 设置文字颜色为白色
+  fill(200,0,0); // 设置文字颜色为白色
   textAlign(CENTER, CENTER); // 文字居中对齐
-  textSize(20); // 设置文字大小
+  textSize(21); // 设置文字大小
   text("I hope she's a free spirit now", width / 2, height / 2); // 在屏幕中心显示文字
 }
 function centerCanvas() {
