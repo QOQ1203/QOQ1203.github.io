@@ -5,8 +5,8 @@ let buttons = [];  // 按钮数组
 let maskGraphics;  // 用于创建遮罩效果
 let particles = [];  // 粒子数组
 let numParticles = 500;  // 粒子数量
-let bgX = 50;  // 背景图片的x坐标mouse
-let bgY = 0;  // 背景图片的y坐标
+let bgX ;  // 背景图片的x坐标mouse50
+let bgY ;  // 背景图片的y坐标
 // 变量用于实现画布拖动
 let isDragging = false;
 let startX, offsetX = 0;
@@ -79,10 +79,12 @@ let avapng2X, avapng2Y, avapng2Scale; // avapng2 的坐标和缩放
 // 新增一个变量用于记录 png11 是否完全显示
 let png11FullyVisible = false;
 // 定义自定义矩形的属性
-let rectX1 = 2900;        // 矩形左上角的 X 坐标
-let rectY1 = 490;        // 矩形左上角的 Y 坐标
+let rectX1;        // 矩形左上角的 X 坐标
+let rectY1;        // 矩形左上角的 Y 坐标
 let rect1Width = 400;    // 矩形宽度
 let rect1Height = 100;   // 矩形高度
+let imgX ;
+let imgY;
 let escapeButtonVisible = false; // 控制 ESCAPE 按钮是否显示
 let escapeButtonX, escapeButtonY, escapeButtonWidth, escapeButtonHeight; // ESCAPE 按钮的坐标和尺寸
 let lastClickTime = 0; // 上一次点击的时间
@@ -93,7 +95,9 @@ let png11Sound;
 let button4Sound;
 let button7Sound;
 let audioCue;
-
+let windowWidth = 1750
+let windowHeight = 820
+let canvas;
 class Vent {
   
   constructor () {
@@ -228,20 +232,30 @@ function preload() {
 
 function setup() {
   createCanvas(windowHeight * 4, windowHeight);
+  canvas = createCanvas(windowHeight * 4, windowHeight);
   frameRate(60);
   pixelDensity(2);
   noCursor();  // 隐藏默认的鼠标指针
+    // 隐藏浏览器滚动条
+    document.body.style.overflow = "hidden";
+     
   rescueFillAmount = 100; // 初始状态按钮完全填满
   maskGraphics = createGraphics(windowWidth * 4, windowHeight);
-  rectX = width * 0.654; // 矩形的X坐标为画布中心
-  rectY = height * 0.273; // 矩形的Y坐标为画布中心
+  bgX = width * 0.0142
+  bgY =0
+  rectX = width * 0.67; // 矩形的X坐标为画布中心
+  rectY = height * 0.32; // 矩形的Y坐标为画布中心
+   // 使用比例定义矩形的初始坐标
+   rectX1 = width * 0.84; // 例如，画布宽度的 65%
+   rectY1 = height * 0.6; // 例如，画布高度的 60%
   // 初始化 textImage 的位置和尺寸
   textImgWidth = textImage.width / 4;
   textImgHeight = textImage.height / 4;
   textImgX = width * 0.53;
   textImgY = height * 0.56;
-  finalTextImgY = textImgY - 280; // 设定最终的 Y 坐标
-
+  finalTextImgY = height * 0.255; // 设定最终的 Y 坐标
+  let imgX = width * 0.0269; 
+  let imgY = height * 0.735;
   // 初始化 rescueButton 的位置和尺寸
   rescueButtonWidth = 150;
   rescueButtonHeight = 50;
@@ -250,8 +264,8 @@ function setup() {
 // ESCAPE 按钮的位置和尺寸
 escapeButtonWidth = 100;
 escapeButtonHeight = 50;
-escapeButtonX = width - escapeButtonWidth - 20; // 画布右下角
-escapeButtonY = height - escapeButtonHeight - 20;
+escapeButtonX = windowWidth * 3.8; // 画布右下角
+escapeButtonY = windowHeight * 0.9;
 // 播放背景音乐并设置音量
 if (bgMusic) {
   bgMusic.loop();  // 循环播放背景音乐
@@ -288,8 +302,8 @@ if (bgMusic) {
   };
 
   // 定义“草”的水平分布范围
-  let startX = 1500; // 草的水平起始位置
-  let endX = width - 1290; // 草的水平结束位置
+  let startX = width * 0.45; // 草的水平起始位置
+  let endX = width* 0.61; // 草的水平结束位置
   
   // 使用定义的范围初始化“草”
   for (let x = startX; x < endX; x += grassDistance) {
@@ -382,8 +396,8 @@ function draw() {
     let eyeHeight = rectHeight * 1.2; // 将高度增大为原来的1.2倍
 
     // 计算眼睛中心位置
-    let eyeCenterX = rectX + eyeWidth / 2 -25;
-    let eyeCenterY = rectY + eyeHeight / 2;
+    let eyeCenterX = rectX ;
+    let eyeCenterY = rectY ;
 
     // 绘制空心的眼睛轮廓
     beginShape();
@@ -490,24 +504,7 @@ if (button8Visible) {
 
 
 
-// // 绘制滑动提示的函数
-// function drawSlideHint() {
-//   fill(255, 0, 0); // 红色箭头
-//   noStroke();
 
-//   // 绘制向右的箭头
-//   let arrowX = width * 0.40; // 箭头的X位置，可以调整
-//   let arrowY = height * 0.4; // 箭头的Y位置，可以调整
-//   triangle(arrowX, arrowY - 10, arrowX, arrowY + 10, arrowX + 20, arrowY);
-
-//   // 绘制提示文字
-//   textSize(14);
-//   textAlign(CENTER, CENTER);
-//   fill(255,0,0);
-//   text("", arrowX - 40, arrowY);
-// }
-  
-// 绘制跳动的红色小圆圈
 
 function mousePressed() {
   startX = mouseX + scrollX;
@@ -569,13 +566,17 @@ if (mouseButton === LEFT) {
 
 // 检查是否点击了 ESCAPE 按钮
 if (escapeButtonVisible) {
-if (adjustedMouseX > 3050 && adjustedMouseX < 3170 &&
-    mouseY > 490 && mouseY < 510) {
-  console.log("Escape button clicked, navigating...");
-  window.open("../final/index.html", "_self");
-}
-}
-}
+  let escapeButtonXAdjusted = windowWidth * 1.7;
+  let escapeButtonYAdjusted = windowHeight * 0.5;
+  let escapeButtonWidthAdjusted = 120;
+  let escapeButtonHeight = 60;
+
+  if (adjustedMouseX > escapeButtonXAdjusted && adjustedMouseX < escapeButtonXAdjusted + escapeButtonWidthAdjusted &&
+      mouseY > escapeButtonYAdjusted && mouseY < escapeButtonYAdjusted + escapeButtonHeight) {
+    console.log("Escape button clicked, navigating...");
+    window.open("../final/index.html", "_self");
+  }
+}}
 
 
 
@@ -585,9 +586,9 @@ function drawEscapeButton() {
   if (escapeButtonVisible) {
     let cornerRadius = 3; // 圆角半径
     let additionalWidth = 20; // 增加的宽度
-    let escapeButtonXAdjusted = 3050; // X坐标
+    let escapeButtonXAdjusted = windowWidth * 1.7; // X坐标
     let escapeButtonWidthAdjusted = 120; // 加宽后的按钮宽度
-    let escapeButtonYAdjusted = 500; // 修改后的Y坐标
+    let escapeButtonYAdjusted = windowHeight * 0.5; // 修改后的Y坐标
 
     fill(255, 0, 0);
     rect(escapeButtonXAdjusted, escapeButtonYAdjusted, escapeButtonWidthAdjusted, escapeButtonHeight, cornerRadius);
@@ -786,14 +787,14 @@ if (某个条件满足) {
   
   function drawNewImage() {
     if (showNewImage) {
-      let imgX = width * 0.0488; // 新图片的X位置，可以根据需要调整
-      let imgY = height * 0.825; // 新图片的Y位置，可以根据需要调整
+      let imgX = width * 0.0269; // 新图片的X位置，可以根据需要调整
+      let imgY = height * 0.735; // 新图片的Y位置，可以根据需要调整
       let imgScale = 0.29; // 缩放比例
   
       let imgWidth = newImage.width * imgScale;
       let imgHeight = newImage.height * imgScale;
   
-      image(newImage, imgX - imgWidth / 2, imgY - imgHeight / 2, imgWidth, imgHeight);
+      image(newImage, imgX, imgY, imgWidth, imgHeight);
     }
   }
   
@@ -908,7 +909,20 @@ function drawCustomCursor(x, y) {
     }
   }
 }
-
+function centerCanvas() {
+  // 计算画布位置，使其居中于屏幕
+  let x = (window.innerWidth - windowWidth) / 2;
+  let y = (window.innerHeight - windowHeight) / 2;
+  canvas.position(x, y);
+}
 function windowResized() {
   resizeCanvas(windowWidth * 4, windowHeight);
+  centerCanvas();  // 重新居中画布
+ // 根据新的画布大小重新计算图片的位置
+ imgX = width * 0.0269; 
+ imgY = height * 0.735;
+ avatarX = width * 0.85; 
+ avatarY = height * 0.5; 
+ avapng2X = width * 0.95; 
+ avapng2Y = height * 0.4; 
 }

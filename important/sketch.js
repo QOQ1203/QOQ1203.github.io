@@ -51,6 +51,9 @@ let bgMusic;  // 背景音乐变量
 let newMusic;  // 声明新音乐变量
 let newClickSound;  // 声明新的点击声音变量
 
+let windowWidth = 1650
+let windowHeight = 800
+let canvas;
 
 function preload() {
   // 预加载一张背景图片
@@ -80,8 +83,7 @@ function preload() {
 
 
 function setup() {
-  // 创建一个画布，大小为窗口的宽度和高度
-  createCanvas(windowWidth, windowHeight);
+  canvas = createCanvas(windowWidth, windowHeight);
   noCursor();  // 隐藏默认鼠标指针
  // 播放背景音乐并设置音量
 if (bgMusic) {
@@ -608,10 +610,16 @@ function drawCustomCursor() {
 
 
 
-
+function centerCanvas() {
+  // 计算画布位置，使其居中于屏幕
+  let x = (window.innerWidth - windowWidth) / 2;
+  let y = (window.innerHeight - windowHeight) / 2;
+  canvas.position(x, y);
+}
 // 在窗口大小更改时重新计算相对位置
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+  centerCanvas();  // 重新居中画布
 
   // 重新计算背景图片的位置
   let bgWidth = bgImage.width * bgScaleRatio;

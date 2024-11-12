@@ -33,7 +33,9 @@ let customFont;  // 用于存储加载的字体
 let bgMusic;  // 背景音乐变量
 let eyeSounds = [];  // 存储每个眼睛的音频
 let eyeSoundPlayed = [];  // 跟踪每个音频是否已播放
-
+let windowWidth = 1650
+let windowHeight = 800
+let canvas;
 function preload() {
 	// 加载自定义的眼球和眼白图片
 	eyeImage = loadImage('13.png');  // 自定义眼球图片
@@ -109,8 +111,12 @@ function setup() {
     document.addEventListener('wheel', preventDefaultScroll, { passive: false });
 	frameRate(30);
     canvasWidth = windowWidth * 2; // 设置画布宽度为窗口的两倍
-    createCanvas(canvasWidth, windowHeight); // 确保画布扩展为2倍窗口宽度
+    canvas = createCanvas(canvasWidth, windowHeight);
 	background(255);
+     // 设置页面的 CSS 背景为黑色
+     document.body.style.backgroundColor = "#000000";
+       // 隐藏浏览器滚动条
+    document.body.style.overflow = "hidden";
    // 播放背景音乐并设置音量
 if (bgMusic) {
     bgMusic.loop();  // 循环播放背景音乐
@@ -436,11 +442,18 @@ function mouseDragged() {
     }
 }
 
-
+function centerCanvas() {
+    // 计算画布位置，使其居中于屏幕
+    let x = (window.innerWidth - windowWidth) / 2;
+    let y = (window.innerHeight - windowHeight) / 2;
+    canvas.position(x, y);
+  }
 function mouseReleased() {
     isDragging = false;
 }
 function windowResized() {
     resizeCanvas(windowWidth * 2, windowHeight);
+    centerCanvas();  // 重新居中画布
+    
     canvasWidth = windowWidth * 2; // 更新画布宽度
 }

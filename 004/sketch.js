@@ -59,6 +59,9 @@ let hoverSound;  // 悬停声音变量
 let animationMusic;  // 定义动画期间播放的音乐
 let backgroundImagePosition = { x: 0.48, y: 0.5, scale: 0.125 };  // 相对于窗口的比例
 let bgX, bgY, bgWidth, bgHeight
+let windowWidth = 1650
+let windowHeight = 800
+let canvas;
 class CustomAnimation {
   constructor(x, y, w, h, img) {
     this.x = x;
@@ -132,7 +135,9 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  canvas = createCanvas(windowWidth, windowHeight);
+  // 调用中心化画布的函数
+  centerCanvas();
   noCursor();  // 隐藏默认鼠标指针
   noStroke();  // 全局禁用描边
  // 初始化相对位置
@@ -150,6 +155,12 @@ if (bgMusic) {
 
 
 
+}
+function centerCanvas() {
+  // 计算画布位置，使其居中于屏幕
+  let x = (window.innerWidth - windowWidth) / 2;
+  let y = (window.innerHeight - windowHeight) / 2;
+  canvas.position(x, y);
 }
 function setRelativePositions() {
   // 计算背景图片的实际位置和尺寸
@@ -487,7 +498,7 @@ function drawBackgroundImage(img) {
 // 在窗口大小更改时重新计算相对位置
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
-
+  centerCanvas();  // 重新居中画布
   // 重新计算背景图片的位置
   let bgWidth = bgImage.width * bgScaleRatio;
   let bgHeight = bgImage.height * bgScaleRatio;

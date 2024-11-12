@@ -29,7 +29,9 @@ let showOverlay = false; // 控制遮罩显示的变量
 let showEndButton = false;
 let closeEffect = false; // 新增变量控制闭合效果
 let closeScale = 1; // 新增变量控制缩放比例
-
+let windowWidth = 1650
+let windowHeight = 800
+let canvas;
 function preload() {
   bgImage = loadImage('封面-01.png'); // 替换为你的背景图片路径
   buttonImg = loadImage('q-22.png'); // 替换为你的按钮图片路径
@@ -45,7 +47,8 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+   // 创建一个画布，大小为窗口的宽度和高度
+   canvas = createCanvas(windowWidth, windowHeight);
   frameRate(60);
   pixelDensity(2);
   colorMode(RGB); // 设置 RGB 颜色模式
@@ -220,4 +223,13 @@ function drawOverlay() {
   textSize(20); // 设置文字大小
   text("I hope she's a free spirit now", width / 2, height / 2); // 在屏幕中心显示文字
 }
-
+function centerCanvas() {
+  // 计算画布位置，使其居中于屏幕
+  let x = (window.innerWidth - windowWidth) / 2;
+  let y = (window.innerHeight - windowHeight) / 2;
+  canvas.position(x, y);
+}
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+  centerCanvas();  // 重新居中画布
+}
