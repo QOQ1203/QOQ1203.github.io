@@ -23,6 +23,9 @@ let hoverCursorImg;  // 悬停时鼠标样式图片
 let cursorScale = 0.3;  // 定义鼠标图片的缩放比例
 let bgMusic;  // 背景音乐变量
 let hoverSound;  // 悬停声音变量
+let windowWidth = 1650
+let windowHeight = 800
+let canvas;
 function preload() {
   // 在这里加载你的背景图片和按钮图片，确保图片路径正确
   bgImage = loadImage('封面-01.jpg');  // 替换为你的背景图片路径
@@ -35,11 +38,13 @@ function preload() {
 
 function setup() {
   // 创建一个画布，大小为窗口的宽度和高度
-  createCanvas(windowWidth, windowHeight);
+  canvas = createCanvas(windowWidth, windowHeight);
   frameRate(60);
   pixelDensity(2);
   colorMode(HSB, 360, 100, 100, 100);
   curveTightness(-0.2);
+  centerCanvas();
+ 
  // 计算缩放后的背景图片宽高
  let bgWidth = bgImage.width * bgScaleRatio;
  let bgHeight = bgImage.height * bgScaleRatio;
@@ -80,7 +85,12 @@ if (bgMusic) {
   // 隐藏默认的鼠标指针
   noCursor();
 }
-
+function centerCanvas() {
+  // 计算画布位置，使其居中于屏幕
+  let x = (window.innerWidth - windowWidth) / 2;
+  let y = (window.innerHeight - windowHeight) / 2;
+  canvas.position(x, y);
+}
 function draw() {
 
   const fadeSpeed = 0.01;
@@ -277,6 +287,7 @@ function drawCustomCursor() {
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+  centerCanvas();  // 重新居中画布
 
   // 重新计算背景图片的位置
   let bgWidth = bgImage.width * bgScaleRatio;
