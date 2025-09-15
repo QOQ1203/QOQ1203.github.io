@@ -8,12 +8,9 @@ let CURSOR_ADD_MODE  = true;
 // 整体纵向偏移（负值=整体上移）
 const SHIFT_Y = 6;
 
-// ==== 七张背景图（依次垂直拼接）====
+// ==== 剩余背景图（依次垂直拼接）====
 const BG_PATHS = [
   "PDF_page-0001.jpg", // 背景图1
-  "PDF_page-0002.jpg", // 背景图2
-  "PDF_page-0003.jpg", // 背景图3
-  "PDF_page-0004.jpg", //图4 - 请替换为实际文件名
   "PDF_page-0005.jpg", //图5 - 请替换为实际文件名
   "PDF_page-0006.jpg", //图6 - 请替换为实际文件名
   "PDF_page-0007.jpg", //图7 - 请替换为实际文件名

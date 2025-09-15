@@ -8,16 +8,13 @@ let CURSOR_ADD_MODE  = true;
 // 整体纵向偏移（负值=整体上移）
 const SHIFT_Y = 6;
 
-// ==== 七张背景图（依次垂直拼接）====
+// ==== 五张背景图（依次垂直拼接）====
 const BG_PATHS = [
   "brand_page-0001.jpg",
   "brand_page-0002.jpg", // 背景图2
   "brand_page-0003.jpg", // 背景图3
-  "brand_page-0004.jpg", //图4 - 请替换为实际文件名
-  "brand_page-0005.jpg", //图5 - 请替换为实际文件名
-  "brand_page-0006.jpg", //图6 - 请替换为实际文件名
-  "brand_page-0007.jpg", //图7 - 请替换为实际文件名
-  "brand_page-0008.jpg", //图8
+  "brand_page-0006.jpg", //图6
+  "brand_page-0007.jpg", //图7
 ];
 
 let bgImgs = [];            // 存储加载的图片

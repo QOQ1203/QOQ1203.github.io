@@ -20,10 +20,18 @@ let isPlaying = false;
 let hasPosterFrame = false;
 let priming = false;
 
+// ==== 视频进度条设置 ====
+const PROGRESS_BAR_HEIGHT = 6; // 进度条高度
+const PROGRESS_BAR_COLOR = [255, 180, 140, 200]; // 进度条颜色
+const PROGRESS_BAR_BG_COLOR = [0, 0, 0, 100]; // 进度条背景颜色（透明深色底，适配白色背景图）
+const PROGRESS_BAR_MARGIN_BOTTOM = 15; // 进度条距离视频底部的距离
+const PROGRESS_THUMB_SIZE = 10; // 进度条小圆圈尺寸
+const PROGRESS_THUMB_COLOR = [255, 180, 140, 255]; // 进度条小圆圈颜色
+
 // 相对坐标（基于“背景按宽度等比缩放后的区域尺寸”）
-let videoRelX = 0.325;
+let videoRelX = 0.331;
 let videoRelY = 0.0550;
-let videoRelW = 0.25;
+let videoRelW = 0.235;
 let videoRelH = 0.77;
 
 function preload() {
@@ -88,6 +96,11 @@ function draw() {
       endShape(CLOSE);
       pop();
     }
+    
+    // 绘制进度条
+    if (hasPosterFrame) {
+      drawProgressBar(vx, vy, vw, vh);
+    }
   }
 
   // 绘制自定义光晕鼠标
@@ -99,6 +112,35 @@ function draw() {
 function mousePressed() {
   if (!section) return;
   const { vx, vy, vw, vh } = videoRectInSection(section);
+
+  // 检查是否点击了进度条
+  if (hasPosterFrame) {
+    const barY = vy + vh + PROGRESS_BAR_MARGIN_BOTTOM;
+    // 进度条点击区域稍微扩大，提高可点击性
+    const clickAreaHeight = PROGRESS_BAR_HEIGHT + 20;
+    const clickAreaTop = barY - 10;
+    if (mouseX > vx && mouseX < vx + vw && mouseY > clickAreaTop && mouseY < clickAreaTop + clickAreaHeight) {
+      if (myVideo && myVideo.duration() > 0) {
+        const progress = (mouseX - vx) / vw;
+        const seekTime = progress * myVideo.duration();
+        try {
+          myVideo.time(seekTime);
+          hasPosterFrame = true;
+          
+          // 如果视频未播放，则开始播放
+          if (!isPlaying && myVideo.elt.paused) {
+            myVideo.elt.muted = false;
+            myVideo.volume(1);
+            isPlaying = true;
+            myVideo.play();
+          }
+        } catch(e) {
+          console.log("Seek error:", e);
+        }
+      }
+      return; // 点击进度条后不再处理视频区域的点击
+    }
+  }
 
   // 点在视频区域
   if (mouseX > vx && mouseX < vx + vw && mouseY > vy && mouseY < vy + vh) {
@@ -132,8 +174,11 @@ function videoRectInSection(section) {
   return { vx, vy, vw, vh };
 }
 
-// 自动 prime 首帧：loadedmetadata → seek(0.01) → seeked → pause
+// 自动 prime 首帧：loadedmetadata → seek(第10帧) → seeked → pause
 let primingOnce = false;
+const COVER_FRAME = 35; // 使用第10帧作为封面
+const ESTIMATED_FPS = 30; // 预估视频帧率，可根据实际视频调整
+
 function autoPrimeFirstFrame() {
   if (!myVideo || primingOnce) return;
   primingOnce = true;
@@ -150,7 +195,11 @@ function autoPrimeFirstFrame() {
     priming = true;
     const p = myVideo.play();
     const doSeek = () => {
-      try { myVideo.time(0.01); } catch(e) {}
+      try {
+        // 计算第10帧对应的时间（秒）
+        const coverTime = COVER_FRAME / ESTIMATED_FPS;
+        myVideo.time(coverTime);
+      } catch(e) {}
       v.addEventListener('seeked', onSeeked, { once:true });
     };
     if (p && typeof p.then === 'function') p.then(() => { doSeek(); myVideo.pause(); })
@@ -167,7 +216,11 @@ function primeOnUserGesture(cb) {
   priming = true;
   const v = myVideo.elt;
   const doSeek = () => {
-    try { myVideo.time(0.01); } catch(e) {}
+    try {
+      // 计算第10帧对应的时间（秒）
+      const coverTime = COVER_FRAME / ESTIMATED_FPS;
+      myVideo.time(coverTime);
+    } catch(e) {}
     myVideo.pause();
     hasPosterFrame = true;
     priming = false;
@@ -210,6 +263,38 @@ function layoutSection() {
 }
 
 // 绘制发光鼠标
+function drawProgressBar(vx, vy, vw, vh) {
+  push();
+  noStroke();
+  
+  // 进度条位置和尺寸
+  const barX = vx;
+  const barY = vy + vh + PROGRESS_BAR_MARGIN_BOTTOM;
+  const barWidth = vw;
+  
+  // 绘制透明浅色底背景
+  fill(PROGRESS_BAR_BG_COLOR[0], PROGRESS_BAR_BG_COLOR[1], PROGRESS_BAR_BG_COLOR[2], PROGRESS_BAR_BG_COLOR[3]);
+  rect(barX, barY, barWidth, PROGRESS_BAR_HEIGHT, PROGRESS_BAR_HEIGHT / 2);
+  
+  // 计算进度
+  let progress = 0;
+  if (myVideo && !isNaN(myVideo.time()) && myVideo.duration() > 0) {
+    progress = myVideo.time() / myVideo.duration();
+  }
+  
+  // 绘制进度条填充
+  fill(PROGRESS_BAR_COLOR[0], PROGRESS_BAR_COLOR[1], PROGRESS_BAR_COLOR[2], PROGRESS_BAR_COLOR[3]);
+  rect(barX, barY, barWidth * progress, PROGRESS_BAR_HEIGHT, PROGRESS_BAR_HEIGHT / 2);
+  
+  // 绘制随进度移动的小圆圈
+  const thumbX = barX + barWidth * progress;
+  const thumbY = barY + PROGRESS_BAR_HEIGHT / 2;
+  fill(PROGRESS_THUMB_COLOR[0], PROGRESS_THUMB_COLOR[1], PROGRESS_THUMB_COLOR[2], PROGRESS_THUMB_COLOR[3]);
+  ellipse(thumbX, thumbY, PROGRESS_THUMB_SIZE, PROGRESS_THUMB_SIZE);
+  
+  pop();
+}
+
 function drawGlowCursor() {
   push();
   if (CURSOR_ADD_MODE) {
