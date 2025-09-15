@@ -30,6 +30,7 @@ let AMBIENT_GLOW_OPACITY_SCALES = []; // 每个光晕的不透明度缩放值
 let AMBIENT_GLOW_UPDATE_INTERVAL = 2; // 每隔多少帧更新一次光晕位置，提高性能
 let ambientGlowFrameCounter = 0; // 帧计数器，用于控制更新频率
 let glowOffscreenCanvas; // 离屏画布，用于批量处理模糊效果
+let cursorGlowCanvas; // 离屏画布，用于光标光晕效果
  
 let started = false;
 let startTime = 0; // 记录动画开始时间
@@ -117,6 +118,11 @@ function initGlowOffscreenCanvas() {
   glowOffscreenCanvas = createGraphics(canvasSize, canvasSize);
   glowOffscreenCanvas.imageMode(CENTER);
   glowOffscreenCanvas.noStroke();
+  
+  // 创建光标光晕离屏画布
+  cursorGlowCanvas = createGraphics(CURSOR_GLOW_SIZE * 2, CURSOR_GLOW_SIZE * 2);
+  cursorGlowCanvas.imageMode(CENTER);
+  cursorGlowCanvas.noStroke();
 }
 
 // ==== 只更新缓存值 ====

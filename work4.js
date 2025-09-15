@@ -20,18 +20,10 @@ const BG_PATHS = [
 let bgImgs = [];            // 存储加载的图片
 let sections = [];          // 每段的 {img, x, y, w, h}
 let currentSection = 0;     // 当前显示的背景图索引
-let loadedImages = 0;       // 已加载图片计数
-let allImagesLoaded = false; // 所有图片加载完成标志
 
 function preload() {
-  // 预加载前3张图片（当前和相邻图片）
-  for (let i = 0; i < Math.min(3, BG_PATHS.length); i++) {
-    bgImgs[i] = loadImage(BG_PATHS[i], () => {
-      loadedImages++;
-      if (loadedImages === BG_PATHS.length) {
-        allImagesLoaded = true;
-      }
-    });
+  for (let i = 0; i < BG_PATHS.length; i++) {
+    bgImgs[i] = loadImage(BG_PATHS[i]);
   }
 }
 
@@ -49,42 +41,18 @@ function setup() {
 function draw() {
   background("#1F2020");
 
-  // 只绘制当前可见区域的图片（优化性能）
-  const visibleStart = Math.max(0, currentSection - 1);
-  const visibleEnd = Math.min(sections.length - 1, currentSection + 1);
-  
-  for (let i = visibleStart; i <= visibleEnd; i++) {
-    const s = sections[i];
-    if (s && s.img) {
-      image(s.img, s.x, s.y + SHIFT_Y, s.w, s.h);
-    }
+  // 绘制所有背景图（加入整体上移 SHIFT_Y）
+  for (const s of sections) {
+    if (s.img) image(s.img, s.x, s.y + SHIFT_Y, s.w, s.h);
   }
 
   // 绘制自定义光晕鼠标
   if (CURSOR_ENABLED) {
     drawGlowCursor();
   }
-  
-  // 延迟加载非可见区域的图片
-  if (!allImagesLoaded) {
-    loadNextImages();
-  }
 }
 
-// 延迟加载剩余图片
-function loadNextImages() {
-  for (let i = 3; i < BG_PATHS.length; i++) {
-    if (!bgImgs[i]) {
-      bgImgs[i] = loadImage(BG_PATHS[i], () => {
-        loadedImages++;
-        if (loadedImages === BG_PATHS.length) {
-          allImagesLoaded = true;
-          layoutSections(); // 所有图片加载完成后重新计算布局
-        }
-      });
-    }
-  }
-}
+
 
 function mouseWheel(event) {
   // 滚轮向下滚动
