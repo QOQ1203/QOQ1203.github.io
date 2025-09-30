@@ -60,11 +60,13 @@ let cachedPlateH = 0;
 
 // ==== 侧边滚动字幕条 ====
 const FONT_PATH = 'VLADIMIR.TTF';
+const HARLOWSI_FONT_PATH = 'HARLOWSI.TTF';
 const LEFT_TEXT = 'BLOSSOMS BEFORE ROOTS      QOQ PORTFOLIO      ';
 const RIGHT_TEXT = 'CLICK THE CAT BOWL TO BEGIN EXPLORING          ';
 
 let SIDE_FONT;
-let SIDE_FONT_SIZE = 15;
+let HARLOWSI_FONT; // 用于INDEX文本的字体
+let SIDE_FONT_SIZE = 18;
 let SIDE_TEXT_COLOR = [10, 10, 10, 255];
 let SIDE_BAND_WIDTH = 30;
 let LEFT_SPEED_PX_S = 40;
@@ -173,7 +175,12 @@ function preload() {
   try {
     SIDE_FONT = loadFont(FONT_PATH);
   } catch(e) {
-    console.warn('⚠️ 字体未加载，将使用系统默认字体');
+    console.warn('⚠️ VLADIMIR字体未加载，将使用系统默认字体');
+  }
+  try {
+    HARLOWSI_FONT = loadFont(HARLOWSI_FONT_PATH);
+  } catch(e) {
+    console.warn('⚠️ HARLOWSI字体未加载，将使用系统默认字体');
   }
 }
 
@@ -394,31 +401,23 @@ function draw() {
     const hover = dist(mouseX, mouseY, cachedPlateX, cachedPlateY) < max(cachedPlateW, cachedPlateH) / 2;
     const basePulse = 0.6 + 0.4 * sin(frameCount * 0.06); // 柔和脉动
 
-    // 基础光圈（总是显示）
+    // 光圈效果已移除
+
+    // 在盘子上添加 Index 提示点击文本
     push();
-    noStroke();
-    const baseAlpha = 120 + 100 * basePulse; // 常亮透明度（可再加大）
-    const baseW = cachedPlateW * (1.7 + 0.15 * basePulse);
-    const baseH = cachedPlateH * (1.7 + 0.15 * basePulse);
-    drawingContext.filter = 'blur(40px)';
-    fill(255, 180, 140, baseAlpha);
-    ellipse(cachedPlateX, cachedPlateY, baseW, baseH);
-    drawingContext.filter = 'none';
+    textFont(HARLOWSI_FONT || 'sans-serif');
+    textSize(30); // 文本大小
+    fill(255, 255, 255, 200 + 55 * basePulse); // 白色文本带脉动透明度
+    textAlign(CENTER, CENTER);
+    textStyle(BOLD); // 粗体文本
+    // 添加轻微阴影使文本在任何背景下都清晰可见
+    drawingContext.shadowColor = 'rgba(0, 0, 0, 0.5)';
+    drawingContext.shadowBlur = 3;
+    text('Index', cachedPlateX*0.97, cachedPlateY*0.98);
+    drawingContext.shadowBlur = 0; // 重置阴影
     pop();
 
-    // 悬浮时的高亮外圈（只在 hover 时附加）
-    if (hover) {
-      push();
-      noStroke();
-      const haloAlpha = 180 + 90 * sin(frameCount * 0.10);
-      const glowW = cachedPlateW * 2.1;
-      const glowH = cachedPlateH * 2.1;
-      drawingContext.filter = 'blur(46px)';
-      fill(255, 200, 150, haloAlpha);
-      ellipse(cachedPlateX, cachedPlateY, glowW, glowH);
-      drawingContext.filter = 'none';
-      pop();
-    }
+    // 悬浮高亮外圈效果已移除
 
     // ========== 悬浮触发喷泉 ==========
     if (hover) {
